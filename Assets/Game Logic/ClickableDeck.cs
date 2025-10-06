@@ -7,9 +7,11 @@ namespace Game_Logic
     {
         private Deck deck;
         public GameObject cardPrefab;
+        public Hand hand;
         private void Start()
         {
             deck = new Deck();
+            hand  = new Hand();
         }
         private void OnMouseDown()
         {
@@ -30,8 +32,21 @@ namespace Game_Logic
 
         private void SpawnCard(Card card)
         {
-            Vector3 spawnPos = transform.position + new Vector3(2, 0, 0); 
+            Vector3 spawnPos;
+            
+            if (hand.cards.Count == 0)
+            {
+                spawnPos = new Vector3(-0.1678f,0.5876f, -0.294f);
+            }
+            else
+            {
+                GameObject lastcard =  hand.cards[hand.cards.Count - 1];
+                spawnPos = lastcard.transform.position + new Vector3(hand.cardSpacing, 0, 0);
+            }
+            
             GameObject cardObj = Instantiate(cardPrefab, spawnPos, Quaternion.identity);
+            hand.cards.Add(cardObj);
+            cardObj.name = "Card_" + card.value;
             // ищем текст внутри карты
             TextMeshPro text = cardObj.GetComponentInChildren<TextMeshPro>();
             if (text != null)
@@ -39,7 +54,7 @@ namespace Game_Logic
                 text.text = card.value.ToString();
             }
 
-            cardObj.name = "Card_" + card.value;
+            
         }
     }
 }
