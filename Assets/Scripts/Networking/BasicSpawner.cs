@@ -9,8 +9,8 @@
     public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
     {
         private NetworkRunner _runner;
-        private Dictionary<PlayerRef, NetworkObject> _players;
-        
+        private Dictionary<PlayerRef, NetworkObject> _players = new Dictionary<PlayerRef, NetworkObject>();
+
         [SerializeField] private NetworkPrefabRef playerPrefab;
         
         private Dictionary<PlayerRef, NetworkObject> _spawnedCharacters = new Dictionary<PlayerRef, NetworkObject>();
@@ -70,9 +70,21 @@
 
             if (runner.IsServer)
             {
-                var playerObject = runner.Spawn(playerPrefab, inputAuthority: player);
+                if (!_players.ContainsKey(player))
+                {
+                    Vector3 spawnPos = Vector3.zero; // можно настроить разные позиции для хоста/клиента
+                    Quaternion spawnRot = Quaternion.identity;
 
-                _players.Add(player, playerObject);
+                    NetworkObject playerObject = runner.Spawn(
+                        playerPrefab,
+                        spawnPos,
+                        spawnRot,
+                        player // inputAuthority
+                    );
+
+                    _players.Add(player, playerObject);
+                    Debug.Log($"PlayerPrefab spawned for Player {player.PlayerId}");
+                }
             }
         }
 
