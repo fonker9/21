@@ -124,8 +124,8 @@ GameObject:
   - component: {fileID: 3256996233746535781}
   - component: {fileID: 3811418623924235083}
   - component: {fileID: 2659041319696305967}
-  - component: {fileID: 7728817919893388407}
-  - component: {fileID: 4463971043243182717}
+  - component: {fileID: 4794265957399721580}
+  - component: {fileID: 2898772639398454061}
   m_Layer: 0
   m_Name: defaultPlayerAvatar
   m_TagString: Untagged
@@ -167,7 +167,7 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 2659041319696305967}
-  - {fileID: 4463971043243182717}
+  - {fileID: 2898772639398454061}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &2659041319696305967
 MonoBehaviour:
@@ -181,7 +181,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20ea21932d9046c6aa50bce4a5cd5fae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
---- !u!143 &7728817919893388407
+--- !u!143 &4794265957399721580
 CharacterController:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -206,7 +206,7 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4463971043243182717
+--- !u!114 &2898772639398454061
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
