@@ -9,11 +9,15 @@
     public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
     {
         private NetworkRunner _runner;
-        [SerializeField] private NetworkPrefabRef _playerPrefab;
+        private Dictionary<PlayerRef, NetworkObject> _players;
+        
+        [SerializeField] private NetworkPrefabRef playerPrefab;
+        
         private Dictionary<PlayerRef, NetworkObject> _spawnedCharacters = new Dictionary<PlayerRef, NetworkObject>();
         
         async void StartGame(GameMode mode)
         {
+            
             // Create the Fusion runner and let it know that we will be providing user input
             _runner = gameObject.AddComponent<NetworkRunner>();
             _runner.ProvideInput = true;
@@ -62,22 +66,31 @@
 
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
         {
+            Debug.Log($"Player {player.PlayerId} has joined.");
+
             if (runner.IsServer)
             {
-                // Create a unique position for the player
-                Vector3 spawnPosition = new Vector3((player.RawEncoded % runner.Config.Simulation.PlayerCount) * 3, 1, 0);
-                NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, spawnPosition, Quaternion.identity, player);
-                // Keep track of the player avatars for easy access
-                _spawnedCharacters.Add(player, networkPlayerObject);
+                var playerObject = runner.Spawn(playerPrefab, inputAuthority: player);
+
+                _players.Add(player, playerObject);
             }
         }
 
         public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
         {
-            if (_spawnedCharacters.TryGetValue(player, out NetworkObject networkObject))
+            Debug.Log($"Player {player.PlayerId} has left.");
+
+            if (runner.IsServer)
             {
-                runner.Despawn(networkObject);
-                _spawnedCharacters.Remove(player);
+                if (_players.TryGetValue(player, out var playerObject))
+                {
+                    runner.Despawn(playerObject);
+
+                    _players.Remove(player);
+                } else
+                {
+                    Debug.LogWarning($"Player {player.PlayerId} has no NetworkPlayer???");
+                }
             }
         }
 
