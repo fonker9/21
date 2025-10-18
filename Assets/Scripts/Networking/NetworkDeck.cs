@@ -50,6 +50,7 @@ public class NetworkDeck : NetworkBehaviour
         bool isLocalPlayer = (Runner.LocalPlayer == player);
         bool isHost;
         float yAngle = 0f;
+        GameObject cardObj;
         // Если это моя карта — спавним у моего якоря,
         // иначе — у противоположного якоря.
         Transform anchor;
@@ -98,9 +99,19 @@ public class NetworkDeck : NetworkBehaviour
         
         // Спавним карту со смещением
         Vector3 spawnPos = anchor.position + offset;
-        GameObject cardObj = Instantiate(cardPrefab, spawnPos, Quaternion.identity);
-        cardObj.name = $"Card_{value}";
-        cardObj.transform.Rotate(0f, yAngle, 0f);
+        if (spawnPos == anchor.position)
+        {
+            cardObj = Instantiate(cardPrefab, spawnPos, Quaternion.identity);
+            cardObj.name = $"Card_{value}";
+            cardObj.transform.Rotate(0f, yAngle, 180f);
+        }
+        else
+        {
+            cardObj = Instantiate(cardPrefab, spawnPos, Quaternion.identity);
+            cardObj.name = $"Card_{value}";
+            cardObj.transform.Rotate(0f, yAngle, 0f);
+        }
+        
         
 
         var text = cardObj.GetComponentInChildren<TextMeshPro>();
