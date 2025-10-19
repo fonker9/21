@@ -9,7 +9,7 @@ namespace Game_Logic
 
         private void Start()
         {
-            networkDeck = FindObjectOfType<NetworkDeck>();
+            //networkDeck = FindObjectOfType<NetworkDeck>();
         }
 
         private void OnMouseDown()
