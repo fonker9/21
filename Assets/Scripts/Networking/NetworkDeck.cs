@@ -123,5 +123,14 @@ public class NetworkDeck : NetworkBehaviour
         Card card = new Card(value);
         hand.AddCard(isHost, card);
     }
+    public void DealCardTo(PlayerRef player)
+    {
+        if (!Object.HasStateAuthority)
+            return;
+
+        Card card = deck.DrawCard();
+        if (card != null)
+            RPC_SpawnCard(card.value, player);
+    }
     
 }

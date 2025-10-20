@@ -22,7 +22,8 @@ namespace Game_Logic
             
             Debug.Log("запущен метод RunRound()");
             PrepareRound();
-            
+            DealInitialCards();
+
         }
         
         //может запустить только Host, иначе deck = Null
@@ -42,5 +43,27 @@ namespace Game_Logic
             _networkDeck.deck.PrintDeck();
             _networkDeck.Hand.PrintHands();
         }
+        
+        
+        private void DealInitialCards()
+        {
+            Debug.Log("Раздача начальных карт...");
+
+            // Проверим, что GameManager запущен только у StateAuthority (хоста)
+            if (!Object.HasStateAuthority)
+                return;
+
+            // Раздаём по 2 карты каждому игроку
+            for (int i = 0; i < 2; i++)
+            {
+                foreach (var player in Runner.ActivePlayers)
+                {
+                    _networkDeck.DealCardTo(player);
+                }
+            }
+
+            Debug.Log("Начальные карты розданы!");
+        }
+        
     }
 }
