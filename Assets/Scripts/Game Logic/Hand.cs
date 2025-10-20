@@ -7,8 +7,11 @@ namespace Game_Logic
     public class Hand : NetworkBehaviour
     {
         private readonly List<Card> _hostCards = new List<Card>();
+        public List<Card> HostCards => _hostCards;
+        
         private readonly List<Card> _clientCards = new List<Card>();
-
+        public List<Card> ClientCards => _clientCards;
+        
         // Добавление карты: мы знаем, хост это или клиент
         public void AddCard(bool isHost, Card card)
         {
@@ -38,5 +41,6 @@ namespace Game_Logic
             Debug.Log($"Host hand: {hostHand}");
             Debug.Log($"Client hand: {clientHand}");
         }
+        
     }
 }

@@ -6,7 +6,7 @@ namespace Game_Logic
     public class Player : NetworkBehaviour
     {
         private Camera playerCamera;
-
+        
         public override void Spawned()
         {
             playerCamera = GetComponentInChildren<Camera>(true);

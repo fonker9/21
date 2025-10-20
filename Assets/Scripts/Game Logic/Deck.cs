@@ -15,6 +15,12 @@ namespace Game_Logic
             Shuffle();
         }
 
+        public void ResetDeck()
+        {
+            _cards = new List<Card>();
+            InitializeDeck();
+            Shuffle();
+        }
         public void Shuffle() /* перемешать карты */ 
         {
             for (var i = _cards.Count - 1; i > 0; i--)
@@ -46,6 +52,19 @@ namespace Game_Logic
                 _cards.Add(new Card(i));
             }
 
+        }
+        public void PrintDeck()
+        {
+            if (_cards.Count == 0)
+            {
+                Debug.Log("Deck is empty.");
+                return;
+            }
+            
+            string deck = string.Join(", ", _cards.ConvertAll(c => c.value.ToString()));
+            
+
+            Debug.Log($"Deck: {deck}");
         }
     }
 }

@@ -9,10 +9,12 @@ public class NetworkDeck : NetworkBehaviour
     
     [SerializeField] private Transform hostAnchor;   // точка для хоста
     [SerializeField] private Transform clientAnchor; // точка для клиента
-    private Hand hand =  new Hand();
-    
+    private Hand hand = new Hand();
+    public Hand Hand => hand;
 
-    private Deck deck;
+    public Deck deck;
+    
+    
     public override void Spawned()
     {
         // Колода создается только на стороне StateAuthority (хоста)
