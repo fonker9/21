@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using Fusion;
     using Fusion.Sockets;
+    using Game_Logic;
     using UnityEngine;
     using UnityEngine.SceneManagement;
 
@@ -64,13 +65,13 @@
 
 
 
-        public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
+        public void OnPlayerJoined(NetworkRunner runner, PlayerRef playerRef)
         {
-            Debug.Log($"Player {player.PlayerId} has joined.");
+            Debug.Log($"Player {playerRef.PlayerId} has joined.");
 
             if (runner.IsServer)
             {
-                if (!_players.ContainsKey(player))
+                if (!_players.ContainsKey(playerRef))
                 {
                     Vector3 spawnPos = Vector3.zero; // можно настроить разные позиции для хоста/клиента
                     Quaternion spawnRot = Quaternion.identity;
@@ -79,11 +80,29 @@
                         playerPrefab,
                         spawnPos,
                         spawnRot,
-                        player // inputAuthority
+                        playerRef // inputAuthority
                     );
+                    Player playerComponent = playerObject.GetComponent<Player>();
 
-                    _players.Add(player, playerObject);
-                    Debug.Log($"PlayerPrefab spawned for Player {player.PlayerId}");
+                    _players.Add(playerRef, playerObject);
+                    Debug.Log($"PlayerPrefab spawned for Player {playerRef.PlayerId}");
+                    
+                    // --- РЕГИСТРАЦИЯ В GAME MANAGER ---
+                    GameManager gm = FindObjectOfType<GameManager>();
+                    if (gm != null)
+                    {
+                        // Если в GameManager ещё нет игроков — хост первый, клиент второй
+                        if (gm.HostPlayer == null)
+                        {
+                            gm.RegisterPlayer(playerComponent, isHost: true);
+                            Debug.Log($"Registered Player {playerRef.PlayerId} as Host");
+                        }
+                        else if (gm.ClientPlayer == null)
+                        {
+                            gm.RegisterPlayer(playerComponent, isHost: false);
+                            Debug.Log($"Registered Player {playerRef.PlayerId} as Client");
+                        }
+                    }
                 }
             }
         }

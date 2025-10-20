@@ -7,7 +7,10 @@ namespace Game_Logic
     {
         [SerializeField]private NetworkDeck _networkDeck;
         private Player hostPlayer;
+        public Player HostPlayer => hostPlayer;
+        
         private Player clientPlayer;
+        public Player ClientPlayer => clientPlayer;
         public enum GameState
         {
             Idle,
@@ -23,7 +26,7 @@ namespace Game_Logic
             Debug.Log("запущен метод RunRound()");
             PrepareRound();
             DealInitialCards();
-
+            HandleTurns();
         }
         
         //может запустить только Host, иначе deck = Null
@@ -44,7 +47,6 @@ namespace Game_Logic
             _networkDeck.Hand.PrintHands();
         }
         
-        
         private void DealInitialCards()
         {
             Debug.Log("Раздача начальных карт...");
@@ -63,6 +65,53 @@ namespace Game_Logic
             }
 
             Debug.Log("Начальные карты розданы!");
+        }
+
+       
+
+        private void HandleTurns()
+        {
+            Debug.Log("Запустился HandleTurns()");
+            currentState = GameState.PlayerTurns;
+            Player currentPlayer = RandomFirstPlayer();
+            while (!BothPlayersFinished())
+            {
+                HandlePlayerTurn(currentPlayer);
+                currentPlayer = GetOpponent(currentPlayer);
+            }
+            Debug.Log("Закончился HandleTurns()");
+        }
+        
+        private void HandlePlayerTurn(Player player)
+        {
+            Debug.Log("Запустился HandlePlayerTurn");
+            hostPlayer.HasStopped =  true;
+            clientPlayer.HasStopped = true;
+            
+        }
+        
+        private Player RandomFirstPlayer()
+        {
+            return (UnityEngine.Random.Range(0, 2) == 0) ? hostPlayer : clientPlayer;
+        }
+        private bool BothPlayersFinished()
+        {
+            bool hostDone = hostPlayer.IsBusted || hostPlayer.HasStopped;
+            bool clientDone = clientPlayer.IsBusted || clientPlayer.HasStopped;
+            Debug.Log("both players have stopped");
+            return hostDone && clientDone;
+        }
+
+        private Player GetOpponent(Player player)
+        {
+            return (player == hostPlayer) ? clientPlayer : hostPlayer;
+        }
+        public void RegisterPlayer(Player player, bool isHost)
+        {
+            if (isHost)
+                hostPlayer = player;
+            else
+                clientPlayer = player;
         }
         
     }

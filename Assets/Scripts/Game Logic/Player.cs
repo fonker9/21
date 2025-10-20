@@ -6,7 +6,8 @@ namespace Game_Logic
     public class Player : NetworkBehaviour
     {
         private Camera playerCamera;
-        
+        [Networked] public bool IsBusted { get; set; }           // перебор
+        [Networked] public bool HasStopped { get; set; }   
         public override void Spawned()
         {
             playerCamera = GetComponentInChildren<Camera>(true);
