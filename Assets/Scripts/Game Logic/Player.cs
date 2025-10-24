@@ -1,4 +1,5 @@
-﻿using Fusion;
+﻿using System;
+using Fusion;
 using UnityEngine;
 
 namespace Game_Logic
@@ -6,6 +7,8 @@ namespace Game_Logic
     public class Player : NetworkBehaviour
     {
         private Camera playerCamera;
+        [Networked] public PlayerRef PlayerRef { get; set; }
+        [Networked] public String PlayerName { get; set; }
         [Networked] public bool IsBusted { get; set; }           // перебор
         [Networked] public bool HasStopped { get; set; }   
         public override void Spawned()

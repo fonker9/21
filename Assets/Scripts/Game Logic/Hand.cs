@@ -41,6 +41,11 @@ namespace Game_Logic
             Debug.Log($"Host hand: {hostHand}");
             Debug.Log($"Client hand: {clientHand}");
         }
+
+        public int CalculateHandValue()
+        {
+            return 0;
+        }
         
     }
 }

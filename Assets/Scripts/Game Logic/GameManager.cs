@@ -67,8 +67,7 @@ namespace Game_Logic
             Debug.Log("Начальные карты розданы!");
         }
 
-       
-
+        
         private void HandleTurns()
         {
             Debug.Log("Запустился HandleTurns()");
@@ -85,8 +84,33 @@ namespace Game_Logic
         private void HandlePlayerTurn(Player player)
         {
             Debug.Log("Запустился HandlePlayerTurn");
-            hostPlayer.HasStopped =  true;
-            clientPlayer.HasStopped = true;
+            Debug.Log($"ход игрока: {player.PlayerName}");
+            if (player.HasStopped || player.IsBusted)
+            {
+                Debug.Log($"{player.PlayerName} уже завершил ход");
+                return;
+            }
+
+            if (!player.HasInputAuthority)
+            {
+                Debug.Log($"Ожидание хода другого игрока ({player.PlayerName})...");
+            }
+
+            var playerAction = ""; // заменить, также заменить case ы
+            switch (playerAction)
+            {
+                case "Hit":
+                    _networkDeck.DealCardTo(player.PlayerRef);
+                    Debug.Log($"{player.PlayerName} взял карту.");
+                    break;
+                case "Stand":
+                    player.HasStopped = true;
+                    Debug.Log($"{player.PlayerName} остановился.");
+                    break;
+                default:
+                    Debug.LogWarning($"Неизвестное действие от {player.PlayerName}");
+                    break;
+            }
             
         }
         
@@ -109,9 +133,16 @@ namespace Game_Logic
         public void RegisterPlayer(Player player, bool isHost)
         {
             if (isHost)
+            {
                 hostPlayer = player;
+                hostPlayer.PlayerName = "Host Player";
+            }
             else
+            {
                 clientPlayer = player;
+                clientPlayer.PlayerName = "Client Player";
+            }
+                
         }
         
     }
