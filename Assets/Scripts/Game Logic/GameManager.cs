@@ -1,7 +1,6 @@
 ﻿using Fusion;
 using Game_Logic;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 
@@ -16,18 +15,21 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private NetworkDeck _deckObject;
 
-    private Dictionary<PlayerSlot, Player> _playerSlots;
+    private Dictionary<PlayerSlot, Player> _playerSlots = new Dictionary<PlayerSlot, Player>();
     private List<Player> _players;
     private GameState _state;
+    private Player _activePlayer;
+
+    private System.Random _random = new System.Random();
 
 
     public void Start()
     {
-        var slots = GetComponentsInChildren<PlayerSlot>();
+        var components = GetComponentsInChildren<PlayerSlot>();
 
-        foreach (var slot in slots)
+        foreach (var component in components)
         {
-            _playerSlots.Add(slot, null);
+            _playerSlots.Add(component, null);
         }
     }
 
@@ -51,7 +53,9 @@ public class GameManager : MonoBehaviour
 
     public void Prepare()
     {
+        _activePlayer = RandomPlayer();
 
+        ChangeState(GameState.PlayerTurn);
     }
 
     public void PlayerTurn()
@@ -64,31 +68,39 @@ public class GameManager : MonoBehaviour
 
     }
 
-    public bool TryFindFreeSlot(out PlayerSlot freeSlot)
+    public void AddPlayer(Player player)
+    {
+        var slot = FirstFreeSlot();
+
+        _playerSlots.Add(slot, player);
+        _players.Add(player);
+
+        player.AssignSlot(slot);
+    }
+
+    public void RemovePlayer(Player player)
+    {
+        _playerSlots.Remove(player.Slot);
+        _players.Remove(player);
+    }
+
+    private PlayerSlot FirstFreeSlot()
     {
         foreach (var (slot, player) in _playerSlots)
         {
             if (player == null)
             {
-                freeSlot = slot;
-                return true;
+                return slot;
             }
         }
 
-        freeSlot = null;
-        return false;
+        return null;
     }
 
-    public void AddPlayer(Player player)
+    private Player RandomPlayer()
     {
-        if (TryFindFreeSlot(out var slot))
-        {
-            _playerSlots.Add(slot, player);
-        }
-    }
+        var index = _random.Next(0, _players.Count);
 
-    public void RemovePlayer()
-    {
-
+        return _players[index];
     }
 }
