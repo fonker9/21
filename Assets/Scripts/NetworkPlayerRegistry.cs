@@ -12,11 +12,12 @@ public class NetworkPlayerRegistry : NetworkBehaviour, INetworkRunnerCallbacks
     [SerializeField] private NetworkPrefabRef _playerPrefab;
     [SerializeField] private GameManager _gameManager;
 
-    private Dictionary<PlayerRef, NetworkObject> _players;
+    private Dictionary<PlayerRef, NetworkObject> _players = new Dictionary<PlayerRef, NetworkObject>();
 
     public override void Spawned()
     {
-        Debug.Log(Runner);
+        Debug.Log($"Runner: {Runner}, {Object.HasStateAuthority}");
+        Runner.AddCallbacks(this);
     }
     public PlayerRef GetPlayerRef(Player player)
     {
