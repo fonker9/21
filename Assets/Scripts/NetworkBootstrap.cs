@@ -19,6 +19,9 @@ public class NetworkBootstrap : MonoBehaviour
         _runner = gameObject.AddComponent<NetworkRunner>();
         _runner.ProvideInput = true;
 
+        // Для поддержки multi-peer режима Fusion (отладка нескольких клиентов)
+        _runner.gameObject.AddComponent<RunnerEnableVisibility>();
+
         var sceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>();
 
         var scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex);

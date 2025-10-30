@@ -5,5 +5,5 @@ public class PlayerSlot : MonoBehaviour
 {
     // (?) Находить их автоматически
     public Transform CameraTransform;
-    public Transform PlayerTransform;
+    public Transform HandTransform;
 }

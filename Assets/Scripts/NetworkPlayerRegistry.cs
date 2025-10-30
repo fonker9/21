@@ -16,7 +16,6 @@ public class NetworkPlayerRegistry : NetworkBehaviour, INetworkRunnerCallbacks
 
     public override void Spawned()
     {
-        Debug.Log($"Runner: {Runner}, {Object.HasStateAuthority}");
         Runner.AddCallbacks(this);
     }
     public PlayerRef GetPlayerRef(Player player)
@@ -32,12 +31,13 @@ public class NetworkPlayerRegistry : NetworkBehaviour, INetworkRunnerCallbacks
         {
             if (!_players.ContainsKey(player))
             {
-                NetworkObject playerObject = runner.Spawn(_playerPrefab, null, null, player);
+                NetworkObject playerNetworkObject = runner.Spawn(_playerPrefab, null, null, player);
                 Debug.Log($"NetworkObject spawned for Player {player.PlayerId}");
+                
+                Player playerObject = playerNetworkObject.GetComponent<Player>();
 
-                Debug.Log(playerObject.GetComponent<Player>());
-
-                _players.Add(player, playerObject);
+                _players.Add(player, playerNetworkObject);
+                _gameManager.AddPlayer(playerObject);
             } else
             {
                 Debug.LogWarning($"Player {player.PlayerId} already has been registered???");

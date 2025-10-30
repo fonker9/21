@@ -5,19 +5,33 @@ namespace Game_Logic
 {
     public class Player : NetworkBehaviour
     {
-        private PlayerSlot _slot;
-        private Camera playerCamera;
+        private AudioListener _audioListener;
 
-        public PlayerSlot Slot { get; }
-
-        public void AssignSlot(PlayerSlot slot)
-        {
-            _slot = slot;
-        }
+        public Camera PlayerCamera;
+        public PlayerSlot Slot { get; private set; }
 
         public override void Spawned()
         {
-            Debug.Log(this);
+            _audioListener = PlayerCamera.GetComponent<AudioListener>();
+            
+            PlayerCamera.enabled = false;
+            _audioListener.enabled = false;
+        }
+
+        public void AssignSlot(PlayerSlot slot)
+        {
+            Slot = slot;
+
+
+            if (Object.HasInputAuthority)
+            {
+                PlayerCamera.enabled = true;
+                _audioListener.enabled = true;
+
+                PlayerCamera.transform.SetPositionAndRotation(slot.CameraTransform.position, slot.CameraTransform.rotation);
+            }
+            
+            Debug.Log($"Assigned slot {slot} for {this}");
         }
     }
 }

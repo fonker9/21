@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private NetworkDeck _deckObject;
 
     private Dictionary<PlayerSlot, Player> _playerSlots = new Dictionary<PlayerSlot, Player>();
-    private List<Player> _players;
+    private List<Player> _players = new List<Player>();
     private GameState _state;
     private Player _activePlayer;
 
@@ -72,16 +72,16 @@ public class GameManager : MonoBehaviour
     {
         var slot = FirstFreeSlot();
 
-        _playerSlots.Add(slot, player);
         _players.Add(player);
+        _playerSlots[slot] = player;
 
         player.AssignSlot(slot);
     }
 
     public void RemovePlayer(Player player)
     {
-        _playerSlots.Remove(player.Slot);
         _players.Remove(player);
+        _playerSlots[player.Slot] = null;
     }
 
     private PlayerSlot FirstFreeSlot()
